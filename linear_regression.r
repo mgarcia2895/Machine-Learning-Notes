@@ -1,9 +1,9 @@
 # Day 1 - Load built-in dataset
-data(mtcars)
-head(mtcars)
+data(mtcars) ## mtcars is a built-in dataset in R
+head(mtcars) ## this shows the first 6 rows of the dataset
 
 # to see a summary of each column (min, median, mean, max)
-summary(mtcars)
+summary(mtcars) ## this shows summary statistics for each column
 
 # to see relationships between columns
 cor(mtcars$mpg, mtcars$wt) ## to see how mpg relates/reacts to weight
@@ -18,16 +18,36 @@ plot (mtcars$wt, mtcars$mpg
       ,col= "steelblue")
 
 # Fit the linear regression model
-model <- lm(mpg ~ wt, data = mtcars)
+model <- lm(mpg ~ wt, data = mtcars) ## mpg is dependent variable, wt is independent variable
+  ### dependent variable (response) is what you are trying to predict/explain
+  ### independent variable (predictor) is what you are using to predict/explain
   ## mpg is first because, we are evaluating how it reacts to weight
+  
+  ## the output of this model will give us an intercept and slope
+  ## The model equation will be: mpg = intercept + slope * wt
 
 # View the summary of the model
 summary(model)
 
-## A result is statistically significant when it is very unlikely to have occurred by chance, assuming there's no real effect.
+# Results:
+# Residuals:
+#     Min      1Q  Median      3Q     Max
+# -4.5432 -2.3647 -0.1252  1.4096  6.8727
 
-##If the predictor (e.g., wt) is statistically significant:
-  ##You can be confident there's a real relationship between wt and mpg
+# Coefficients:
+#             Estimate Std. Error t value Pr(>|t|)
+# (Intercept)  37.2851     1.8776  19.858  < 2e-16 ***
+# wt           -5.3445     0.5591  -9.559 1.29e-10 ***
+# ---
+# Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+# Residual standard error: 3.046 on 30 degrees of freedom
+# Multiple R-squared:  0.7528,    Adjusted R-squared:  0.7446
+# F-statistic: 91.38 on 1 and 30 DF,  p-value: 1.294e-10
+
+## The intercept (37.29) is the predicted mpg when weight (wt) = 0 (not realistic here, but part of the equation).
+## The slope (−5.34) means: for each additional 1000 lbs of weight, mpg decreases by about 5.34.
+
 
 ##The negative slope (−5.34) isn't just noise — it's likely a real effect
 
@@ -70,7 +90,10 @@ plot(model$residuals,
      col = "darkorange")
 
 abline(h = 0, lty = 2, col = "gray")
-
+## a residual plot helps diagnose if linear regression assumptions hold:
+  ## Linearity: Residuals should be randomly scattered around 0
+  ## Homoscedasticity: Spread of residuals should be roughly equal across all fitted values
+  ## No patterns: No curves, funnels, or clusters in residuals
 # -------------------------------------------------------------
 # 📊 Residual Plot Interpretation Guide (Reference Notes)
 # -------------------------------------------------------------
@@ -108,9 +131,12 @@ abline(h = 0, lty = 2, col = "gray")
 
 #Key findings: Slope was negative (heavier cars → lower mpg). R² ≈ ____ (explain what % of variance weight explains).
 
-#Significance: p‑value for wt < 0.05, so relationship is statistically significant.
+#Significance: p‑value for wt < 0.05, so relationship is statistically significant. 
+## this means we can be confident that weight truly affects mpg, not just random chance.
+## the p-value is calculated based on the t-statistic for the slope coefficient, testing the null hypothesis that slope = 0 (no effect).
 
 #Diagnostics: Residuals centered around 0 with no strong pattern → linearity/constant variance looked ok.
+## had a wave pattern, which may suggest a non-linear relationship that linear model didn't fully capture.
 
 #Limitations: Single predictor; likely missing factors (hp, cylinders, etc.).
 
@@ -146,6 +172,7 @@ abline(h = 0, lty = 2, col = "gray")
 #
 # 5️⃣ Residual plots
 # - Residuals are the differences between actual and predicted values.
+# What is the difference between residuals and errors in regression analysis?
 # - A well-behaved residual plot shows points scattered randomly around 0 with no pattern.
 # - Learned to diagnose patterns:
 #   • Curve shape → add polynomial terms or use non-linear models
@@ -157,4 +184,6 @@ abline(h = 0, lty = 2, col = "gray")
 # - Linear regression is not just drawing a line — it’s building a predictive model backed by statistics.
 # - Understanding p-values, R², and residual behavior helps confirm whether the model is valid,
 #   and informs when to try transformations, add predictors, or switch modeling approaches.
+# When to use linear regression versus other modeling techniques?
+# # Linear regression is best for continuous dependent variables with linear relationships to predictors.
 # -------------------------------------------------------------
