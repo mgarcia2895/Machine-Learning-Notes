@@ -1,0 +1,163 @@
+---
+title: "Week 1 – Simple Linear Regression with mtcars Dataset"
+author: "Miguel Garcia"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+## Objective
+
+The goal of this analysis is to model **miles per gallon (mpg)** as a function of **vehicle weight (wt)** using simple linear regression, and to interpret the statistical meaning of the results.
+
+---
+
+## Data Exploration
+
+We begin by loading the built-in `mtcars` dataset and inspecting its structure.
+
+```{r}
+data(mtcars)
+head(mtcars)
+```
+To understand the distribution of each variable, we examine summary statistics.
+```{r}
+summary(mtcars)
+```
+## Relationships Between Variables
+We calculate Pearson correlations to quantify how mpg relates to weight and horsepower.
+```{r}
+cor(mtcars$mpg, mtcars$wt)
+```
+```{r}
+cor(mtcars$mpg, mtcars$hp)
+```
+Both correlations are negative, indicating that heavier cars and cars with higher horsepower tend to have lower fuel efficiency.
+
+## Visualization
+We visualize the relationship between weight and mpg.
+```{r}
+plot(
+  mtcars$wt, mtcars$mpg,
+  main = "MPG vs Weight",
+  xlab = "Weight (1000 lbs)",
+  ylab = "Miles per Gallon",
+  pch = 19,
+  col = "steelblue"
+)
+```
+
+The scatter plot shows a clear downward trend, suggesting a linear relationship.
+
+## Linear Regression Model
+We fit a simple linear regression model with mpg as the dependent variable and weight as the independent variable.
+```{r}
+model <- lm(mpg ~ wt, data = mtcars)
+```
+```{r}
+summary(model)
+```
+## Interpretation
+
+- Intercept (~37.29): Predicted mpg when weight is 0 (not realistic, but required for the equation).
+
+- Slope (~−5.34): For every additional 1,000 lbs of weight, mpg decreases by about 5.34.
+
+- This negative slope is statistically significant, meaning the relationship is unlikely due to random chance.
+
+**Statistical Significance (p-values) Rule of Thumb:**
+
+| p-value | Interpretation |
+|--------|---------------|
+| < 0.001 | Very strong evidence (***) |
+| < 0.01 | Strong evidence (**) |
+| < 0.05 | Acceptable evidence (*) |
+| > 0.05 | Not statistically significant |
+
+- In this model, the p-value for weight is ≪ 0.001, providing strong evidence that weight affects mpg.
+
+- Model Fit (R-squared)
+R² ≈ 0.75
+
+- About 75% of the variation in mpg is explained by vehicle weight alone.
+
+- The remaining 25% is due to other factors such as horsepower, engine size, and aerodynamics.
+
+***Contextual Interpretation***
+
+R² Range	Meaning:
+
+- 0.90–1.00	Excellent (rare in real data)
+- 0.70–0.89	Good
+- 0.40–0.69	Moderate
+- < 0.40	Weak
+
+In this case, 0.75 is strong, especially for a single-predictor model.
+
+## Residual Diagnostics
+We examine residuals to validate linear regression assumptions.
+```{r}
+plot(
+  model$residuals,
+  main = "Residuals from Linear Model",
+  xlab = "Index",
+  ylab = "Residuals (Error)",
+  pch = 19,
+  col = "darkorange"
+)
+abline(h = 0, lty = 2, col = "gray")
+```
+
+### Residual Interpretation
+
+**A well-behaved residual plot should:**
+
+- Be centered around 0
+- Show no clear pattern
+- Have roughly constant spread
+
+
+In this plot, residuals are mostly centered around zero, though a slight wave pattern suggests a possible non-linear relationship.
+
+**Common Residual Patterns (Reference)**
+
+- Curve shape: Missing non-linearity → try polynomial terms
+
+- Funnel shape: Heteroscedasticity → try transformations
+
+- Outliers: Influential points → investigate or use robust methods
+
+- Clusters: Missing categorical variable
+
+**Key Findings**
+ 
+- Weight is a strong, statistically significant predictor of mpg.
+
+- The relationship is negative: heavier cars get lower fuel efficiency.
+
+- The model explains ~75% of mpg variability using weight alone.
+
+**Limitations**
+
+- Only one predictor is used.
+
+- Important variables (horsepower, cylinders) are omitted.
+
+## Next Steps
+
+- Fit a multiple regression: mpg ~ wt + hp
+
+- Test non-linearity: add I(wt^2)
+
+- Compare R² and residual behavior across models
+
+## Week 1 Reflection
+
+This exercise reinforced that linear regression is not just fitting a line, but validating assumptions using:
+
+- **p-values**
+
+- **R²**
+
+- **residual diagnostics**
+
+Understanding these components helps determine when a model is trustworthy and when more complexity is needed.
